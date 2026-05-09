@@ -3,13 +3,21 @@ import './globals.css'
 import '@copilotkit/react-ui/styles.css'
 
 export const metadata: Metadata = {
-  title: 'AgentWarRoom',
-  description: 'Engineering Command Center with Generative UI',
+  title: 'AgentsWarRoom · Quantum Purple',
+  description: 'Engineering Command Center — Generative UI',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap"
+          rel="stylesheet"
+        />
+      </head>
       <body>{children}</body>
     </html>
   )
