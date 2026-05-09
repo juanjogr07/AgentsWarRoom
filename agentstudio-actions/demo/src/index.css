@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  background: #030712;
+  color: #f9fafb;
+  font-family: ui-monospace, 'Cascadia Code', 'Fira Code', monospace;
+}
