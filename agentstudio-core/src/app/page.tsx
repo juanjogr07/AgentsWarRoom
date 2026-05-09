@@ -159,25 +159,79 @@ CRITICAL RULES:
   }
 
   return (
-    <div className="min-h-screen bg-gray-950 text-gray-100">
-      <header className="border-b border-gray-800 px-6 py-4 flex items-center gap-3">
-        <span className="text-red-500 text-xl">&#9888;</span>
-        <h1 className="text-lg font-bold tracking-tight">AgentWarRoom</h1>
-        <span className="ml-auto text-xs text-gray-600">Engineering Command Center · Generative UI</span>
+    <div className="min-h-screen bg-gray-950 text-gray-100 bg-grid">
+      <div className="scan-line" />
+
+      {/* Header */}
+      <header className="border-b border-gray-800/80 bg-gray-950/90 backdrop-blur px-6 py-3 flex items-center gap-3 sticky top-0 z-10">
+        {/* Live indicator */}
+        <div className="flex items-center gap-2">
+          <div className="live-dot w-2 h-2 rounded-full bg-red-500" />
+          <span className="text-xs font-bold text-red-400 tracking-widest uppercase">Live</span>
+        </div>
+
+        <div className="w-px h-4 bg-gray-700 mx-1" />
+
+        <span className="text-sm font-bold tracking-tight text-white">AgentWarRoom</span>
+        <span className="text-xs text-gray-600 hidden sm:block">Engineering Command Center</span>
+
+        <div className="ml-auto flex items-center gap-4 text-xs font-mono">
+          {modulesLoaded && (
+            <span className="text-gray-600">
+              <span className="text-green-500">{registry.list().length}</span> components
+            </span>
+          )}
+          {activeComponents.length > 0 && (
+            <button
+              onClick={() => setActiveComponents([])}
+              className="px-2 py-1 border border-gray-700 hover:border-gray-500 rounded text-gray-500 hover:text-gray-300 transition-colors"
+            >
+              ✕ clear
+            </button>
+          )}
+          <span className="text-gray-700">Gemini 2.0</span>
+        </div>
       </header>
 
       <main className="p-6">
         {activeComponents.length === 0 ? (
-          <div className="flex items-center justify-center h-[60vh]">
-            <div className="text-center space-y-3">
-              <p className="text-gray-500 text-sm">Ask the agent about the system.</p>
-              <div className="space-y-1 text-xs font-mono text-gray-700">
-                <p>"hay un incidente en auth-service, muéstrame qué está pasando"</p>
-                <p>"muéstrame el historial de deploys"</p>
-                <p>"quién está de guardia?"</p>
-                <p>"qué alertas están activas?"</p>
-                <p>"cómo va el sprint?"</p>
+          <div className="flex items-center justify-center h-[70vh]">
+            <div className="text-center space-y-6 max-w-lg">
+              {/* Big icon */}
+              <div className="text-5xl select-none">&#9888;</div>
+
+              <div>
+                <h2 className="text-white font-bold text-lg mb-1">Engineering Command Center</h2>
+                <p className="text-gray-600 text-sm">
+                  Describe lo que necesitas. El agente genera la UI exacta.
+                </p>
               </div>
+
+              {/* Prompt suggestions */}
+              <div className="space-y-2 text-left">
+                {[
+                  'hay un incidente en auth-service, muéstrame qué está pasando',
+                  'qué alertas están activas ahora mismo?',
+                  'muéstrame el historial de deploys',
+                  'quién está de guardia?',
+                  'cómo va el sprint 14?',
+                ].map((prompt, i) => (
+                  <div
+                    key={i}
+                    className="flex items-center gap-2 px-3 py-2 border border-gray-800 hover:border-gray-600 rounded bg-gray-900/50 hover:bg-gray-900 transition-colors cursor-default group"
+                  >
+                    <span className="text-gray-700 group-hover:text-gray-500 text-xs">›</span>
+                    <span className="text-xs font-mono text-gray-500 group-hover:text-gray-300 transition-colors">
+                      "{prompt}"
+                    </span>
+                  </div>
+                ))}
+              </div>
+
+              <p className="text-gray-800 text-xs font-mono">
+                Escribe en el sidebar de la derecha
+                <span className="blink ml-1 text-gray-600">█</span>
+              </p>
             </div>
           </div>
         ) : (
@@ -185,15 +239,20 @@ CRITICAL RULES:
             {activeComponents.map((item, i) => {
               const registered = registry.get(item.name)
               if (!registered) {
-                return <div key={i} className="text-red-500 text-xs font-mono">Unknown component: {item.name}</div>
+                return (
+                  <div key={i} className="text-red-500 text-xs font-mono px-3 py-2 border border-red-900 rounded bg-red-950/30">
+                    Unknown component: {item.name}
+                  </div>
+                )
               }
               const Component = registered.component
               return (
-                <Component
-                  key={`${item.name}-${i}`}
-                  data={item.data}
-                  onAction={handleAction}
-                />
+                <div key={`${item.name}-${i}`} className="fade-up" style={{ animationDelay: `${i * 60}ms` }}>
+                  <Component
+                    data={item.data}
+                    onAction={handleAction}
+                  />
+                </div>
               )
             })}
           </div>
